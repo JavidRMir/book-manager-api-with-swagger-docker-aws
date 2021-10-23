@@ -2,7 +2,6 @@ package com.techreturners.bookmanager.repository;
 
 import com.techreturners.bookmanager.model.Book;
 import com.techreturners.bookmanager.model.Genre;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -36,5 +35,20 @@ public class BookManagerRepositoryTests {
         assertThat(bookById).isNotNull();
 
     }
+
+
+    @Test
+    public void testDeletesBookById() {
+        Book book = new Book(3L, "Book Three", "This is the description for Book Three", "Person Three", Genre.Education);
+        bookManagerRepository.save(book);
+
+        Iterable<Book> books = bookManagerRepository.findAll();
+
+        bookManagerRepository.deleteById(books.iterator().next().getId());
+
+        assertThat(bookManagerRepository.count()).isEqualTo(0);
+
+    }
+
 
 }
