@@ -27,7 +27,14 @@ public class BookManagerController {
 
     @GetMapping({"/{bookId}"})
     public ResponseEntity<Book> getBookById(@PathVariable Long bookId) {
-        return new ResponseEntity<>(bookManagerService.getBookById(bookId), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(bookManagerService.getBookById(bookId), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("book", e.getMessage());
+            return new ResponseEntity<>(httpHeaders, HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @PostMapping
@@ -38,20 +45,35 @@ public class BookManagerController {
         return new ResponseEntity<>(newBook, httpHeaders, HttpStatus.CREATED);
     }
 
+
     //User Story 4 - Update Book By Id Solution
     @PutMapping({"/{bookId}"})
     public ResponseEntity<Book> updateBookById(@PathVariable("bookId") Long bookId, @RequestBody Book book) {
-        bookManagerService.updateBookById(bookId, book);
-        return new ResponseEntity<>(bookManagerService.getBookById(bookId), HttpStatus.OK);
+        try {
+            bookManagerService.updateBookById(bookId, book);
+            return new ResponseEntity<>(bookManagerService.getBookById(bookId), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("book", e.getMessage());
+            return new ResponseEntity<>(httpHeaders, HttpStatus.NOT_FOUND);
+        }
+
     }
+
 
     // Delete a book by Id
     @DeleteMapping({"/{bookId}"})
     public ResponseEntity<Book> deleteBookById(@PathVariable("bookId") Long bookId) {
-        bookManagerService.deleteBookById(bookId);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("book", " Book with id " + bookId + " successfully deleted");
-        return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
+        try {
+            bookManagerService.deleteBookById(bookId);
+            httpHeaders.add("book", " Book with id " + bookId + " successfully deleted");
+            return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
+        } catch (Exception e) {
+            httpHeaders.add("book", e.getMessage());
+            return new ResponseEntity<>(httpHeaders, HttpStatus.NOT_FOUND);
+        }
+
     }
 
 

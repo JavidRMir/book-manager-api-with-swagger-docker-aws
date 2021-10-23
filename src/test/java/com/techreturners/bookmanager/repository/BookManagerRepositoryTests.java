@@ -38,7 +38,7 @@ public class BookManagerRepositoryTests {
 
 
     @Test
-    public void testDeletesBookById() {
+    public void testDeleteBookById() {
         Book book = new Book(3L, "Book Three", "This is the description for Book Three", "Person Three", Genre.Education);
         bookManagerRepository.save(book);
 

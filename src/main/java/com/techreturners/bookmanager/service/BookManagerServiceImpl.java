@@ -30,24 +30,41 @@ public class BookManagerServiceImpl implements BookManagerService {
 
     @Override
     public Book getBookById(Long id) {
-        return bookManagerRepository.findById(id).get();
+        if (bookManagerRepository.findById(id).isPresent()) {
+            return bookManagerRepository.findById(id).get();
+        } else {
+            throw new IllegalArgumentException("Book Id " + id + ", doesn't exist");
+        }
     }
 
     //User Story 4 - Update Book By Id Solution
     @Override
     public void updateBookById(Long id, Book book) {
-        Book retrievedBook = bookManagerRepository.findById(id).get();
 
-        retrievedBook.setTitle(book.getTitle());
-        retrievedBook.setDescription(book.getDescription());
-        retrievedBook.setAuthor(book.getAuthor());
-        retrievedBook.setGenre(book.getGenre());
+        if (bookManagerRepository.findById(id).isPresent()) {
 
-        bookManagerRepository.save(retrievedBook);
+            Book retrievedBook = bookManagerRepository.findById(id).get();
+
+            retrievedBook.setTitle(book.getTitle());
+            retrievedBook.setDescription(book.getDescription());
+            retrievedBook.setAuthor(book.getAuthor());
+            retrievedBook.setGenre(book.getGenre());
+
+            bookManagerRepository.save(retrievedBook);
+
+        } else {
+            throw new IllegalArgumentException("Book Id " + id + ", doesn't exist");
+        }
     }
 
     @Override
     public void deleteBookById(Long id) {
-        bookManagerRepository.deleteById(id);
+
+        if (bookManagerRepository.findById(id).isPresent()) {
+            bookManagerRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("Book Id " + id + ", doesn't exist");
+        }
     }
+
 }
