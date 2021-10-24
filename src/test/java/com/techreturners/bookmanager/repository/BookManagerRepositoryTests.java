@@ -44,6 +44,8 @@ public class BookManagerRepositoryTests {
 
         Iterable<Book> books = bookManagerRepository.findAll();
 
+        assertThat(bookManagerRepository.count()).isEqualTo(1);
+
         bookManagerRepository.deleteById(books.iterator().next().getId());
 
         assertThat(bookManagerRepository.count()).isEqualTo(0);

@@ -6,6 +6,7 @@ import com.techreturners.bookmanager.repository.BookManagerRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.matchers.Null;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.ArrayList;
@@ -86,12 +87,12 @@ public class BookManagerServiceTests {
         Long bookId = 5L;
         var book = new Book(5L, "Book Five", "This is the description for Book Five", "Person Five", Genre.Fantasy);
 
-        when(mockBookManagerRepository.save(book)).thenReturn(book);
-        var bk = mockBookManagerRepository.save(book);
+        when(mockBookManagerRepository.findById(bookId)).thenReturn(Optional.of(book));
+        doNothing().when(mockBookManagerRepository).deleteById(bookId);
 
-        bookManagerServiceImpl.deleteBookById(bk.getId());
+        bookManagerServiceImpl.deleteBookById(bookId);
 
-        verify(mockBookManagerRepository, times(1)).deleteById(book.getId());
+        verify(mockBookManagerRepository, times(1)).deleteById(bookId);
 
     }
 
